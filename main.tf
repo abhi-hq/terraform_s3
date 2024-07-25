@@ -27,10 +27,10 @@ resource "aws_s3_bucket_public_access_block" "privaccess" {
 }
 
 resource "aws_iam_policy" "bucket_policy" { // creating bucket policy 
-  name        = "my-bucket-policy"
+  name        = "buckpol"
   path        = "/"
   description = "Allow "
-  policy = jsondecode({
+  policy = jsonencode({
   "Version" : "2012-10-17",
   "Statement" : [
     {
@@ -44,7 +44,7 @@ resource "aws_iam_policy" "bucket_policy" { // creating bucket policy
       ],
       "Resource" : [
         "arn:aws:s3:::*/*",
-        "arn:aws:s3:::my-bucket-name"
+        "arn:aws:s3:::terras3"
       ]
     }
   ]
@@ -78,7 +78,7 @@ resource "aws_iam_instance_profile" "some_profile" {//creating iam instance prof
   role = aws_iam_role.EC2-S3.name
 }
 resource "aws_instance" "web_instances" {//create an ec2 instance with this iam profile attached to it
-  ami           = "ami-0427090fd1714168b"
+  ami           = var.amiid
   instance_type = "t2.micro"
 
   iam_instance_profile = aws_iam_instance_profile.some_profile.id
